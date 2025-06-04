@@ -55,8 +55,35 @@ async function main() {
     }
   }
 
+  else if (method === 'DELETE') {
+    // Para DELETE esperamos resource tipo "products/7"
+    if (!resource.startsWith('products/')) {
+      console.error('Para eliminar un producto, usá: DELETE products/<productId>');
+      process.exit(1);
+    }
+
+    try {
+      const response = await fetch(`${BASE_URL}/${resource}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Producto eliminado:');
+        console.log(JSON.stringify(data, null, 2));
+      } else {
+        console.error(`Error eliminando producto: ${response.status} ${response.statusText}`);
+      }
+    } catch (error) {
+      console.error('Error al eliminar producto:', error.message);
+    }
+  }
+
   else {
-    console.error(`Método no soportado: ${method}. Usá GET o POST.`);
+    console.error(`Método no soportado: ${method}. Usá GET, POST o DELETE.`);
   }
 }
 
